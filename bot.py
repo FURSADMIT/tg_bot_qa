@@ -4,8 +4,6 @@ from telegram import (
     Update,
     ReplyKeyboardMarkup,
     KeyboardButton,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton
 )
 from telegram.ext import (
     Application,
@@ -18,7 +16,8 @@ from telegram.ext import (
 
 # Настройка логгирования
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
@@ -114,7 +113,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def about_course(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(
-        ABOUT_TEXT, 
+        ABOUT_TEXT,
         parse_mode="Markdown",
         disable_web_page_preview=True
     )
@@ -209,21 +208,8 @@ def main() -> None:
     application.add_handler(conv_handler)
     application.add_handler(MessageHandler(filters.Regex("^О курсе$"), about_course))
     
-    # Запуск бота
-    port = int(os.environ.get("PORT", 5000))
-    webhook_url = os.environ.get("RENDER_EXTERNAL_URL")
-    
-    if webhook_url:
-        # Режим вебхука для Render
-        application.run_webhook(
-            listen="0.0.0.0",
-            port=port,
-            url_path=token,
-            webhook_url=f"{webhook_url}/{token}"
-        )
-    else:
-        # Локальный режим с поллингом
-        application.run_polling()
+    # Запуск бота в режиме polling
+    application.run_polling()
 
 if __name__ == "__main__":
     main()
